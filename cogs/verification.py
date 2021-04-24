@@ -1,10 +1,10 @@
-from discord.ext import commands
-import os
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
 import random
 import discord
-import re
+import os
+import asyncio
+from discord.ext import commands
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 
 # user joins
@@ -50,6 +50,9 @@ class verification(commands.Cog):
             return True
         return 0
 
+    def checkCode(self, msg):
+        return self.cache[msg.author.id] == msg.content
+
     # message email with verification code
     def sendEmail(self, userEmail, vCode):
         message = Mail(
@@ -82,6 +85,16 @@ class verification(commands.Cog):
                 self.cacheFunction(ctx.author.id, vCode)
                 self.sendEmail(ctx.content, vCode)
                 await ctx.channel.send('An Email has been sent, please be sure to check your spam folder.')
+            
+                try:
+                    msg = await self.client.wait_for('message', check=self.check)
+                except asyncio.TimeoutError:
+                    await ctx.channel.send('Invalid verification code')
+                else:
+                    role = discord.utils.get(ctx.author.guild.roles, name='verified')
+                    await ctx.author.add_roles(role)
+                    await ctx.channel.send("Successfully verified")
+
             else:
                 await ctx.channel.send('Please provide a valid baruch student email.')
             
