@@ -9,8 +9,23 @@ import re
 
 # user joins
 # bot dms
+
+# NEW - on message filter for args*
+# -- if the passed arg matches email format, follow email path
+# -- if the passed arg is 8 digits, check library 
+
+# ALTERNATIVE: send the passcode as "!AIS 12345678" and create a command that reacts to !AIS, 
+# this way we dont need to filter on message
+
+# NEW - can update the value in dictionary to contain array with email address & verification code
+
+
+
 # check if response contains @baruchmail.cuny.edu email (regex)
 # if yes, send email with randomly generated code
+
+
+
 
 
 
@@ -22,7 +37,7 @@ class verification(commands.Cog):
 
     # verification code generator
     def randomValue(self):
-        return random.randint(100000, 999999)
+        return random.randint(10000000, 99999999)
 
     # cache to store an email / verification code 
     def cacheFunction(self, key, value):
@@ -43,7 +58,7 @@ class verification(commands.Cog):
             subject='Baruch AIS Verification Code - Expires in 30 minutes',
             html_content=str(vCode))
         try:
-            sg = SendGridAPIClient('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')
+            sg = SendGridAPIClient(os.environ('AISmailKey'))
             response = sg.send(message)
             print(response.status_code)
             print(response.body)
@@ -64,7 +79,7 @@ class verification(commands.Cog):
         if str(ctx.channel.type) == 'private':
             if self.isBaruchEmail(ctx.content):
                 vCode = self.randomValue()
-                self.cacheFunction(ctx.author, vCode)
+                self.cacheFunction(ctx.author.id, vCode)
                 self.sendEmail(ctx.content, vCode)
                 await ctx.channel.send('An Email has been sent, please be sure to check your spam folder.')
             else:
