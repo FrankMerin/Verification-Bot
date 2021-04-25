@@ -25,7 +25,7 @@ class track(commands.Cog):
             data = json.load(tracks_json)
             return data[majorTrack]
 
-
+    
     @commands.command()
     async def track(self, ctx):
         guild = await self.client.fetch_guild(self.guildID)
@@ -50,7 +50,7 @@ class track(commands.Cog):
             data = self.getMajorRequirements('Information Risk Management and Cybersecurity')
             majorReq = data["Required"]
             majorElec = data["Elective"]
-            
+
         else:
             await ctx.send("You do not currently have any CIS major role. Please visit https://zicklin.baruch.cuny.edu/academic-programs/undergraduate/majors/computer-information-systems-cis-track/ to learn more")
 

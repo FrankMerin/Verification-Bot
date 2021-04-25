@@ -43,6 +43,7 @@ class verification(commands.Cog):
             return True
         return 0
     
+    #check if the message being sent is a message
     def isCode(self, code):
         print(code)
         try:
@@ -51,6 +52,7 @@ class verification(commands.Cog):
         except Exception:
             return False
 
+    # validates if the code assigned to the userID is 
     def checkCode(self, msg):
         return str(self.cache[msg.author.id]).strip('[]') == str(msg.content)
 
