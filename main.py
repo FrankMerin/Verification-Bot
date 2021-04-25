@@ -3,9 +3,14 @@ from discord.ext import commands
 import os
 
 
-discord_key = (os.environ.get('BOT_API_KEY'))
-client = commands.Bot(command_prefix='!')
+
+intents = discord.Intents.default()
+intents.members = True
+
+discord_key = (os.environ.get('CCbot-API2'))
+client = commands.Bot(command_prefix='!', intents=intents)
 client.remove_command('help')
+
 
 
 @client.command()
@@ -18,8 +23,10 @@ if __name__ == '__main__':
     for extension in [f.replace('.py', '') for f in os.listdir("cogs") if os.path.isfile(os.path.join("cogs", f))]:
         try:
             client.load_extension("cogs" + "." + extension)
-        except:
+        except Exception as e:
             print('Failed to load extension {extension}.')
+            print(e)
+
 
 
 @client.event
