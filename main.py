@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 
 
-discord_key = (os.environ.get('CCbot-API2'))
+discord_key = (os.environ.get('BOT_API_KEY'))
 client = commands.Bot(command_prefix='!')
 client.remove_command('help')
 

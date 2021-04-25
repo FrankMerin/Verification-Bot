@@ -88,12 +88,11 @@ class verification(commands.Cog):
             
                 try:
                     msg = await self.client.wait_for('message', check=self.check)
-                except asyncio.TimeoutError:
-                    await ctx.channel.send('Invalid verification code')
-                else:
                     role = discord.utils.get(ctx.author.guild.roles, name='verified')
                     await ctx.author.add_roles(role)
                     await ctx.channel.send("Successfully verified")
+                except asyncio.TimeoutError:
+                    await ctx.channel.send('Invalid verification code')
 
             else:
                 await ctx.channel.send('Please provide a valid baruch student email.')
