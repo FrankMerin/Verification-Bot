@@ -5,6 +5,7 @@ from sendgrid.helpers.mail import Mail
 import random
 import discord
 import re
+import asyncio
 
 
 # user joins
@@ -30,18 +31,24 @@ import re
 
 
 class verification(commands.Cog):
+    
 
     def __init__(self, client):
         self.client = client
         self.cache = {}
+
+    guildID = 280776371779928074
+    channelID = 684929894768967726
+    roleID = 835621668931108954
+
 
     # verification code generator
     def randomValue(self):
         return random.randint(10000000, 99999999)
 
     # cache to store an email / verification code 
-    def cacheFunction(self, key, value):
-        self.cache[key] = [value]
+    def cacheFunction(self, key, value, email):
+        self.cache[key] = [value, email]
 
     # regex check on valid email
     def isBaruchEmail(self, email):
@@ -49,6 +56,17 @@ class verification(commands.Cog):
         if re.search(regex, email):
             return True
         return 0
+    
+    def isCode(self, code):
+        print(code)
+        try:
+            int(code)
+            return True
+        except Exception:
+            return False
+
+    def checkCode(self, msg):
+        return str(self.cache[msg.author.id]).strip('[]') == str(msg.content)
 
     # message email with verification code
     def sendEmail(self, userEmail, vCode):
@@ -58,7 +76,7 @@ class verification(commands.Cog):
             subject='Baruch AIS Verification Code - Expires in 30 minutes',
             html_content=str(vCode))
         try:
-            sg = SendGridAPIClient(os.environ('AISmailKey'))
+            sg = SendGridAPIClient(os.environ.get('AISmailKey'))
             response = sg.send(message)
             print(response.status_code)
             print(response.body)
@@ -69,19 +87,37 @@ class verification(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        await member.send_message('Please provide your @baruchmail.cuny.edu email for verification')
+        await member.send('Please provide your @baruchmail.cuny.edu email for verification')
 
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
         if ctx.author.bot:
             return
-        if str(ctx.channel.type) == 'private':
-            if self.isBaruchEmail(ctx.content):
+
+        #determine what is the content if number between the range of verification codes, its vercode
+        # if its e
+
+        
+        
+        originalCTX = ctx # re-assignment of context variable due to on_message reseting ctx from bot messages
+        if str(originalCTX.channel.type) == 'private':
+            if self.isBaruchEmail(originalCTX.content):
                 vCode = self.randomValue()
-                self.cacheFunction(ctx.author.id, vCode)
-                self.sendEmail(ctx.content, vCode)
-                await ctx.channel.send('An Email has been sent, please be sure to check your spam folder.')
+                self.cacheFunction(originalCTX.author.id, vCode, originalCTX.content)
+                self.sendEmail(originalCTX.content, vCode)
+                print(self.cache)
+                await originalCTX.channel.send('An Email has been sent, please be sure to check your spam folder.')
+            elif self.isCode(originalCTX.content):
+                user_code = int(originalCTX.content)
+                if self.cache[originalCTX.author.id][0] == user_code:
+                    guild = await self.client.fetch_guild(280776371779928074)
+                    role = guild.get_role(835621668931108954)
+                    channel = self.client.get_channel(684929894768967726)
+                    member = await guild.fetch_member(originalCTX.author.id)
+                    await member.add_roles(role)
+                    await originalCTX.channel.send("Successfully verified")
+                    await channel.send(f'User {originalCTX.author} was verified with {self.cache[originalCTX.author.id][1]}')              
             else:
                 await ctx.channel.send('Please provide a valid baruch student email.')
             
