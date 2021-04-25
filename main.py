@@ -1,7 +1,7 @@
+import re
 import discord
 from discord.ext import commands
 import os
-
 
 
 intents = discord.Intents.default()
@@ -15,8 +15,7 @@ client.remove_command('help')
 
 @client.command()
 async def load(ctx, extention):
-    client.load_extension('cogs.{extention}')
-
+    client.load_extension(f'cogs.{extention}')
 
 
 if __name__ == '__main__':
@@ -24,9 +23,8 @@ if __name__ == '__main__':
         try:
             client.load_extension("cogs" + "." + extension)
         except Exception as e:
-            print('Failed to load extension {extension}.')
+            print(f'Failed to load extension {extension}.')
             print(e)
-
 
 
 @client.event
