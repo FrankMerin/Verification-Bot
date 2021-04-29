@@ -9,5 +9,4 @@ Primary features:
 
 Verification Feature Improvements pending for scalability:
 
-- Remove emails from cache after user authenticated
 - Remove email from cache after 5 incorrect validations + timeout the user for the day. This would prevent someone from using up all 100 free api calls to send email

@@ -42,6 +42,10 @@ class verification(commands.Cog):
         if re.search(regex, email):
             return True
         return 0
+
+    # convert user object to member object    
+    def getMember(self, user):
+        return self.guild.get_member(user)
     
     #check if the message being sent is a message
     def isCode(self, code):
@@ -100,6 +104,8 @@ class verification(commands.Cog):
             return
         if ctx.content.startswith('!'):
             return
+        if self.verified_role in self.getMember(ctx.author.id).roles:
+            return
         if str(ctx.channel.type) == 'private':
             if self.isBaruchEmail(ctx.content):
                 vCode = self.randomValue()
@@ -112,6 +118,7 @@ class verification(commands.Cog):
                     member = await self.guild.fetch_member(ctx.author.id)
                     await member.add_roles(self.verified_role)
                     await ctx.channel.send("Successfully verified")
+                    self.cache.pop(user_id)
                     await self.verified_channel.send(f'User {ctx.author} was verified with {self.cache[ctx.author.id][1]}')
                 else: 
                     await ctx.channel.send("Code Invalid")

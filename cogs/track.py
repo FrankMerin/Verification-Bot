@@ -1,6 +1,5 @@
 from discord.ext import commands
 import json
-from pathlib import Path
 import os
 import sys
 import discord
@@ -12,10 +11,10 @@ class track(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        self.guildID = 280776371779928074
-        self.generalRoleID = 835916642504015892
-        self.analyticsRoleID = 835916806610747393
-        self.cyberRoleID = 835916902345343017
+        self.guildID = 0
+        self.generalRole = 0
+        self.analyticsRole = 0
+        self.cyberRole = 0
 
 
     # retrieve tracks.json data, after parsing for major
@@ -25,27 +24,29 @@ class track(commands.Cog):
             data = json.load(tracks_json)
             return data[majorTrack]
 
-    
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.guild = self.client.guilds[0]
+        self.generalRole = [role for role in self.guild.roles if role.name == 'General'][0]
+        self.analyticsRole = [role for role in self.guild.roles if role.name == 'Data Analytics'][0]
+        self.cyberRole = [role for role in self.guild.roles if role.name == 'Cyber'][0]
+
+
     @commands.command()
     async def track(self, ctx):
-        guild = await self.client.fetch_guild(self.guildID)
-        generalRole = guild.get_role(self.generalRoleID)
-        analyticsRole = guild.get_role(self.analyticsRoleID)
-        cyberRole = guild.get_role(self.cyberRoleID)
-
-        if generalRole in ctx.author.roles:
+        if self.generalRole in ctx.author.roles:
             sendTrack = 'General'
             data = self.getMajorRequirements('General')
             majorReq = data["Required"]
             majorElec = data["Elective"]
 
-        elif analyticsRole in ctx.author.roles:
+        elif self.analyticsRole in ctx.author.roles:
             sendTrack = 'Data Analytics'
             data = self.getMajorRequirements('Data Analytics')
             majorReq = data["Required"]
             majorElec = data["Elective"]
 
-        elif cyberRole in ctx.author.roles:
+        elif self.cyberRole in ctx.author.roles:
             sendTrack = 'Cyber'
             data = self.getMajorRequirements('Information Risk Management and Cybersecurity')
             majorReq = data["Required"]
