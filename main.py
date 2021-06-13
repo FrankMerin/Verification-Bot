@@ -7,7 +7,7 @@ import os
 intents = discord.Intents.default()
 intents.members = True
 
-discord_key = (os.environ.get('CCbot-API2')) # change this key
+discord_key = (os.environ.get('BaruchCollegeKey')) # change this key
 client = commands.Bot(command_prefix='!', intents=intents)
 
 
