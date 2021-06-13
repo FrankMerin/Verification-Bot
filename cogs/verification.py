@@ -107,8 +107,8 @@ class verification(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         self.guild = self.client.guilds[0]
-        self.verified_role = [role for role in self.guild.roles if role.name == 'verified'][0]
-        self.verified_channel = [channel for channel in self.guild.channels if channel.name == 'verified'][0]
+        self.verified_role = [role for role in self.guild.roles if role.name == 'Verified'][0]
+        self.verified_channel = [channel for channel in self.guild.channels if channel.name == 'verification-log'][0]
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
