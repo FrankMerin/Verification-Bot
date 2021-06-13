@@ -23,6 +23,7 @@ if __name__ == '__main__':
     for extension in [f.replace('.py', '') for f in os.listdir("cogs") if os.path.isfile(os.path.join("cogs", f))]:
         try:
             client.load_extension("cogs" + "." + extension)
+            print(extension)
         except Exception as e:
             print('Failed to load extension {extension}.')
             print(e)

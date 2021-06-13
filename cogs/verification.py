@@ -18,6 +18,8 @@ import asyncio
 
 
 
+
+
 class verification(commands.Cog):
     
     def __init__(self, client):
@@ -32,9 +34,16 @@ class verification(commands.Cog):
     def randomValue(self):
         return random.randint(10000000, 99999999)
 
+    #check if user is blocked for attempting more then 3 emails.
+    def isBlocked(self, ctx):
+        if ctx.author.id not in self.cache:
+            return False
+        return self.cache[ctx.author.id][2] > 3
+
     # cache to store an email / verification code get guild roles
-    def cacheFunction(self, user_id, verification_code, email):
-        self.cache[user_id] = [verification_code, email]
+    def cacheFunction(self, user_id, verification_code, email, usedEmails, numberOfAttempts):
+        self.cache[user_id] = [verification_code, email, 0, 0]
+    
 
     # regex check on valid email
     def isBaruchEmail(self, email):
@@ -77,7 +86,7 @@ class verification(commands.Cog):
         message = Mail(
             from_email='frankdevacc@gmail.com',
             to_emails = userEmail,
-            subject='Baruch AIS Verification Code - Expires in 30 minutes',
+            subject='Baruch AIS Verification Code',
             html_content=str(vCode))
         try:
             sg = SendGridAPIClient(os.environ.get('AISmailKey'))
@@ -88,6 +97,11 @@ class verification(commands.Cog):
         except Exception as e:
             print(e)
 
+
+    @commands.command()
+    async def verify(self, ctx):
+        await ctx.author.send("Please provide your full @baruchmail.cuny.edu email for verification.")
+
     @commands.Cog.listener()
     async def on_ready(self):
         self.guild = self.client.guilds[0]
@@ -96,7 +110,7 @@ class verification(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        await member.send('Please provide your @baruchmail.cuny.edu email for verification')
+        await member.send('Please provide your full @baruchmail.cuny.edu email for verification.')
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
@@ -104,24 +118,35 @@ class verification(commands.Cog):
             return
         if ctx.content.startswith('!'):
             return
-        if self.verified_role in self.getMember(ctx.author.id).roles:
+        if str(ctx.channel.type) == 'private' and self.verified_role in self.getMember(ctx.author.id).roles:
+            return await ctx.channel.send("You are already verified. If this is not true, please message the mod team.")
+        if str(ctx.channel.type) == 'private' and self.isBlocked(ctx):
+            await ctx.channel.send("You have been blocked for too many attempts. Please try again in 1-2 days or message the mod team.")
             return
         if str(ctx.channel.type) == 'private':
-            if self.isBaruchEmail(ctx.content):
+            if self.isBaruchEmail(ctx.content):      
+                # updates email provided attempt
                 vCode = self.randomValue()
-                self.cacheFunction(ctx.author.id, vCode, ctx.content)
+                if ctx.author.id not in self.cache:
+                    self.cacheFunction(ctx.author.id, vCode, ctx.content, 0, 0)
+                self.cache[ctx.author.id][2] += 1
                 self.sendEmail(ctx.content, vCode)
+                    
                 await ctx.channel.send('An Email has been sent, please be sure to check your spam folder.')
-            elif self.isCode(ctx.content):
+            elif self.isCode(ctx.content) and ctx.author.id in self.cache:
                 user_code = int(ctx.content)                
                 if self.cache[ctx.author.id][0] == user_code:
                     member = await self.guild.fetch_member(ctx.author.id)
                     await member.add_roles(self.verified_role)
                     await ctx.channel.send("Successfully verified")
-                    self.cache.pop(user_id)
                     await self.verified_channel.send(f'User {ctx.author} was verified with {self.cache[ctx.author.id][1]}')
+                    self.cache.pop(ctx.author.id)
                 else: 
                     await ctx.channel.send("Code Invalid")
+                    if self.cache[ctx.author.id][3] >= 5:
+                        self.cache[ctx.author.id][2] += 1
+                        await ctx.channel.send('Too many invalid codes, please provide a valid Baruch Email to try again.')
+                    self.cache[ctx.author.id][3] += 1
             else:
                 await ctx.channel.send('Please provide a valid baruch student email.')
             
