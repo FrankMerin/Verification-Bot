@@ -84,12 +84,12 @@ class verification(commands.Cog):
     # message email with verification code
     def sendEmail(self, userEmail, vCode):
         message = Mail(
-            from_email='frankdevacc@gmail.com',
+            from_email='discord.baruch@gmail.com',
             to_emails = userEmail,
-            subject='Baruch AIS Verification Code',
+            subject='Baruch College Discord Verification Code',
             html_content=str(vCode))
         try:
-            sg = SendGridAPIClient(os.environ.get('AISmailKey'))
+            sg = SendGridAPIClient(os.environ.get('BaruchCollegeMailKey'))
             response = sg.send(message)
             print(response.status_code)
             print(response.body)
@@ -100,6 +100,8 @@ class verification(commands.Cog):
 
     @commands.command()
     async def verify(self, ctx):
+        if self.verified_role in self.getMember(ctx.author.id).roles:
+            return await ctx.author.send("You are already verified. If this is not true, please message the mod team.")
         await ctx.author.send("Please provide your full @baruchmail.cuny.edu email for verification.")
 
     @commands.Cog.listener()
@@ -153,4 +155,3 @@ class verification(commands.Cog):
 
 def setup(client):
     client.add_cog(verification(client))
-

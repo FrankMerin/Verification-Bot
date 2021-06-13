@@ -1,12 +1,3 @@
-# AIS Bot
+# Verification Bot for Baruch College
 
-Bot built for the Baruch Association of Information Systems Club.
-
-Primary features:
-
-- E-mail verification to validate user is a Baruch Student.
-- Provides information to end users
-
-Verification Feature Improvements pending for scalability:
-
-- Remove email from cache after 5 incorrect validations + timeout the user for the day. This would prevent someone from using up all 100 free api calls to send email
+This is a verification bot that can be used for any specific email doamain verification.

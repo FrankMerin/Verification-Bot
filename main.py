@@ -9,7 +9,7 @@ intents.members = True
 
 discord_key = (os.environ.get('CCbot-API2')) # change this key
 client = commands.Bot(command_prefix='!', intents=intents)
-client.remove_command('help')
+
 
 
 
@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
 @client.event
 async def on_ready():
-    await client.change_presence(activity=discord.Game(name="!help"))
+    await client.change_presence(activity=discord.Game(name="!verify"))
 
 
 client.run(discord_key, bot=True, reconnect=True)
