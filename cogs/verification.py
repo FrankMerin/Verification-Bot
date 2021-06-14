@@ -102,7 +102,7 @@ class verification(commands.Cog):
     async def verify(self, ctx):
         if self.verified_role in self.getMember(ctx.author.id).roles:
             return await ctx.author.send("You are already verified. If this is not true, please message the mod team.")
-        await ctx.author.send("Please provide your full @baruchmail.cuny.edu email for verification.")
+        await ctx.author.send("If you would like to gain access to the verified students channel, please provide your @baruchmail.cuny.edu email for verification.")
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -112,7 +112,7 @@ class verification(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        await member.send('Please provide your full @baruchmail.cuny.edu email for verification.')
+        await member.send('If you would like to gain access to the verified students channel, please provide your @baruchmail.cuny.edu email for verification.')
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
@@ -132,9 +132,9 @@ class verification(commands.Cog):
                 if ctx.author.id not in self.cache:
                     self.cacheFunction(ctx.author.id, vCode, ctx.content, 0, 0)
                 self.cache[ctx.author.id][2] += 1
-                self.sendEmail(ctx.content, vCode)
-                    
-                await ctx.channel.send('An Email has been sent, please be sure to check your spam folder.')
+                self.sendEmail(ctx.content, vCode)     
+                await ctx.channel.send('A verification code has been sent to your Email, please be sure to check your spam folder and provide the verification code.')
+
             elif self.isCode(ctx.content) and ctx.author.id in self.cache:
                 user_code = int(ctx.content)                
                 if self.cache[ctx.author.id][0] == user_code:
