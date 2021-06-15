@@ -47,7 +47,7 @@ class verification(commands.Cog):
 
     # regex check on valid email
     def isBaruchEmail(self, email):
-        regex = '^[_A-Za-z0-9-\\+]+\.+([_A-Za-z0-9-]+)*@baruchmail.cuny.edu$'
+        regex = '^[_A-Za-z0-9-\\+]+.*\.+([_A-Za-z0-9-]+).*@baruchmail.cuny.edu$'
         if re.search(regex, email, re.IGNORECASE):
             return True
         return 0
