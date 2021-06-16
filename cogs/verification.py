@@ -47,7 +47,7 @@ class verification(commands.Cog):
 
     # regex check on valid email
     def isBaruchEmail(self, email):
-        regex = '^[_A-Za-z0-9-\\+]+.*\.+([_A-Za-z0-9-]+).*@baruchmail.cuny.edu$'
+        regex = '^.*@baruchmail\.cuny\.edu$'
         if re.search(regex, email, re.IGNORECASE):
             return True
         return 0
@@ -101,7 +101,7 @@ class verification(commands.Cog):
     @commands.command()
     async def verify(self, ctx):
         if self.verified_role in self.getMember(ctx.author.id).roles:
-            return await ctx.author.send("You are already verified. If this is not true, please message the mod team.")
+            return await ctx.author.send("You are already verified. If this is not true, please message @Frank#3536.")
         await ctx.author.send("If you would like to gain access to the verified students channel, please provide your @baruchmail.cuny.edu email for verification.")
 
     @commands.Cog.listener()
@@ -121,9 +121,9 @@ class verification(commands.Cog):
         if ctx.content.startswith('!'):
             return
         if str(ctx.channel.type) == 'private' and self.verified_role in self.getMember(ctx.author.id).roles:
-            return await ctx.channel.send("You are already verified. If this is not true, please message the mod team.")
+            return await ctx.channel.send("You are already verified. If this is not true, please message @Frank#3536.")
         if str(ctx.channel.type) == 'private' and self.isBlocked(ctx):
-            await ctx.channel.send("You have been blocked for too many attempts. Please try again in 1-2 days or message the mod team.")
+            await ctx.channel.send("You have been blocked for too many attempts. Please try again in 1-2 days or message @Frank#3536.")
             return
         if str(ctx.channel.type) == 'private':
             if self.isBaruchEmail(ctx.content):      
