@@ -146,9 +146,9 @@ Additionally, to protect against spam, you must have an email attached to your d
                 if self.cache[ctx.author.id][0] == user_code:
                     member = await self.guild.fetch_member(ctx.author.id)
                     # add roles incase user is new joiner, custom to server due to interaction with other bots
-                    if self.guild.get_role(657803668719927297) in self.getMember(ctx.author.id).roles:
-                        await member.remove_roles(self.guild.get_role(657803668719927297))
+                    if self.guild.get_role(657803668719927297) in member.roles:
                         await member.add_roles(self.guild.get_role(482611413504884746))
+                        await member.remove_roles(self.guild.get_role(657803668719927297))
                     await member.add_roles(self.verified_role)
                     await ctx.channel.send("Successfully verified")
                     await self.verified_channel.send(f'User {ctx.author} was verified') # with {self.cache[ctx.author.id][1]}
