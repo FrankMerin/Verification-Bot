@@ -17,5 +17,5 @@ class on_join_trigger(commands.Cog):
 
     **Optional:** If you would like to gain access to the verified students channel, please provide your @baruchmail.cuny.edu email for verification.''')
 
-    def setup(client):
-        client.add_cog(on_join_trigger(client))
+def setup(client):
+    client.add_cog(on_join_trigger(client))
