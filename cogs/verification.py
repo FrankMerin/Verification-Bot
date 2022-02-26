@@ -17,7 +17,7 @@ import asyncio
 # if code valid, assign verified role
 
 
-
+discordTag = (os.environ.get('DiscordTag'))
 
 
 class verification(commands.Cog):
@@ -101,7 +101,7 @@ class verification(commands.Cog):
     @commands.command()
     async def verify(self, ctx):
         if self.verified_role in self.getMember(ctx.author.id).roles:
-            return await ctx.author.send("You are already verified. If this is not true, please message @Frank#3536.")
+            return await ctx.author.send(f"You are already verified. If this is not true, please message {discordTag}.")
         await ctx.author.send("If you would like to gain access to the verified students channel, please provide your @baruchmail.cuny.edu email for verification.")
 
     @commands.Cog.listener()
@@ -118,9 +118,9 @@ class verification(commands.Cog):
         if ctx.content.startswith('!'):
             return
         if str(ctx.channel.type) == 'private' and self.verified_role in self.getMember(ctx.author.id).roles:
-            return await ctx.channel.send("You are already verified. If this is not true, please message @Frank#3536.")
+            return await ctx.channel.send(f"You are already verified. If this is not true, please message {discordTag}.")
         if str(ctx.channel.type) == 'private' and self.isBlocked(ctx):
-            await ctx.channel.send("You have been blocked for too many attempts. Please try again in 1-2 days or message @Frank#3536.")
+            await ctx.channel.send(f"You have been blocked for too many attempts. Please try again in 1-2 days or message {discordTag}.")
             return
         if str(ctx.channel.type) == 'private':
             if self.isBaruchEmail(ctx.content):      
