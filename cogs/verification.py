@@ -56,14 +56,6 @@ class verification(commands.Cog):
     def getMember(self, user):
         return self.guild.get_member(user)
     
-    #check if the message being sent is a message
-    def isCode(self, code):
-        print(code)
-        try:
-            int(code)
-            return True
-        except Exception:
-            return False
 
     # validates if the code assigned to the userID is 
     def checkCode(self, msg):
@@ -128,6 +120,8 @@ class verification(commands.Cog):
                 vCode = self.randomValue()
                 if ctx.author.id not in self.cache:
                     self.cacheFunction(ctx.author.id, vCode, ctx.content, 0, 0)
+                else:
+                    self.cache[ctx.author.id][0] = vCode
                 self.cache[ctx.author.id][2] += 1
                 self.sendEmail(ctx.content, vCode)     
                 await ctx.channel.send('A verification code has been sent to your Email, please be sure to check your spam folder and provide the verification code.')
