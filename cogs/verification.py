@@ -136,7 +136,7 @@ class verification(commands.Cog):
                         await member.remove_roles(self.guild.get_role(657803668719927297))
                     await member.add_roles(self.verified_role)
                     await ctx.channel.send("Successfully verified")
-                    await self.verified_channel.send(f'User {ctx.author} was verified') # with {self.cache[ctx.author.id][1]}
+                    await self.verified_channel.send(f'User {ctx.author} was verified with {self.cache[ctx.author.id][1]}')
                     self.cache.pop(ctx.author.id)
                 else: 
                     await ctx.channel.send("Code Invalid")
