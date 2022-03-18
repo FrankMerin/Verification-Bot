@@ -13,7 +13,7 @@ class on_join_trigger(commands.Cog):
     
     To gain access to the server, please visit #role-assignment channel and select a role.
 
-    Additionally, to protect against spam, you must have an email attached to your discord account to talk in the server.
+    Additionally, to protect against spam, you must have a valid phone number on your discord account to see the rest of the server.
 
     **Optional:** If you would like to gain access to the verified students channel, please provide your @baruchmail.cuny.edu email for verification.''')
 

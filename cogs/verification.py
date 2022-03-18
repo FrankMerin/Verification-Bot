@@ -94,7 +94,7 @@ class verification(commands.Cog):
     async def verify(self, ctx):
         if self.verified_role in self.getMember(ctx.author.id).roles:
             return await ctx.author.send(f"You are already verified. If this is not true, please message {discordTag}.")
-        await ctx.author.send("If you would like to gain access to the verified students channel, please provide your @baruchmail.cuny.edu email for verification.")
+        await ctx.author.send("If you would like to gain access to the verified students channel, please provide your @baruchmail.cuny.edu email to recieve a verification code.")
 
     @commands.Cog.listener()
     async def on_ready(self):
